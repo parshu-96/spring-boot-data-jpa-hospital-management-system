@@ -1,6 +1,7 @@
 package com.codingshuttle.youtube.hospitalManagement.security;
 
 import com.codingshuttle.youtube.hospitalManagement.entity.User;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
@@ -27,5 +28,14 @@ public class AuthUtil {
                 .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 10))
                 .signWith(getSecretKey())
                 .compact();
+    }
+
+    public String getUserNameFromToken(String jwtToken) {
+        Claims claims =  Jwts.parser()
+                .verifyWith(getSecretKey())
+                .build()
+                .parseSignedClaims(jwtToken)
+                .getPayload();
+        return claims.getSubject();
     }
 }
